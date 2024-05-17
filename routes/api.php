@@ -19,42 +19,38 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
 // User Auth
-Route::group([
-    'prefix' => 'auth'
-], function ($router) {
+Route::group(['prefix' => 'auth', 'middleware' => 'guest'], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);    
 });
 
-Route::apiResource("categories", CategoryController::class)->middleware('auth');
-Route::apiResource("products", ProductController::class)->middleware('auth');
+Route::group(['middleware' => 'JWTAuth'], function () {
 
-// Customer Controller
-Route::group([
-    'middleware' => 'auth',
-    'prefix' => 'customers'
-], function ($router) {
-    Route::get('/index', [CustomerController::class, 'index']);
-    Route::post('/store', [CustomerController::class, 'store']); 
-    Route::put('/update/{id}', [CustomerController::class, 'update']); 
-    Route::delete('/destroy/{id}', [CustomerController::class, 'destroy']); 
-});
+    // User Auth
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/refresh', [AuthController::class, 'refresh']);
+        Route::get('/user-profile', [AuthController::class, 'userProfile']);
+    });
 
-// Invoice Controller
-Route::group([
-    'middleware' => 'auth',
-    'prefix' => 'invoices'
-], function ($router) {
-    Route::get('/index', [InvoiceController::class, 'index']);
-    Route::post('/store', [InvoiceController::class, 'store']); 
-    Route::put('/update/{id}', [InvoiceController::class, 'update']); 
-    Route::delete('/destroy/{id}', [InvoiceController::class, 'destroy']); 
+    Route::apiResource("categories", CategoryController::class);
+    Route::apiResource("products", ProductController::class);
+
+    // Customer Controller
+    Route::group(['prefix' => 'customers'], function () {
+        Route::get('/index', [CustomerController::class, 'index']);
+        Route::post('/store', [CustomerController::class, 'store']);
+        Route::put('/update/{id}', [CustomerController::class, 'update']);
+        Route::delete('/destroy/{id}', [CustomerController::class, 'destroy']);
+    });
+
+    // Invoice Controller
+    Route::group(['prefix' => 'invoices'], function () {
+        Route::get('/index', [InvoiceController::class, 'index']);
+        Route::post('/store', [InvoiceController::class, 'store']);
+        Route::put('/update/{id}', [InvoiceController::class, 'update']);
+        Route::delete('/destroy/{id}', [InvoiceController::class, 'destroy']);
+    });
 });
