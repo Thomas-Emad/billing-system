@@ -5,24 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Invoice extends Model
+class Indebtedness extends Model
 {
     use HasFactory;
 
-    protected $table = 'invoices';
+    protected $table = 'indebtednesses';
 
     protected $fillable = [
-        'status',
-        'paid_price',
-        'total_price',
-        'customer_id',
+        'debtor',
+        'invoice_id',
+        'customer_id'
     ];
-
-    public function products() {
-        return $this->belongsToMany(InvoiceProduct::class);
-    }
 
     public function customer() {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function invoice() {
+        return $this->belongsTo(Invoice::class);
     }
 }

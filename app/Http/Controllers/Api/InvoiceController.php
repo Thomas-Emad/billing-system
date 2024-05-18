@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Invoice;
 use App\Models\InvoiceProduct;
+use App\Models\Indebtedness;
 use Illuminate\Support\Facades\Validator;
 
 class InvoiceController extends Controller
@@ -96,7 +97,7 @@ class InvoiceController extends Controller
 
         $validate = Validator::make($request->all(), [
             'status' => ['in:paid,unpaid,partly_paid'],
-            'paid_price' => ['int']
+            'paid_price' => ['int', 'required']
         ]);
 
         if ($validate->fails()) {
@@ -111,6 +112,16 @@ class InvoiceController extends Controller
                 'status'     => $request->status,
                 'paid_price' => $request->paid_price
             ]);
+
+            if($request->paid_price < $invoice->total_price) {
+
+                Indebtedness::create([
+                    'debtor'      => $invoice->total_price - $request->paid_price,
+                    'customer_id' => $invoice->customer->id,
+                    'invoice_id'  => $invocie->id
+                ]);
+                
+            }
 
             return response()->json([
                 'Message' => 'Updated Suc'

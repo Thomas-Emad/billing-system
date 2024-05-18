@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\InvoiceController;
+use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\AuthController;
 
 /*
@@ -52,5 +53,12 @@ Route::group(['middleware' => 'JWTAuth'], function () {
         Route::post('/store', [InvoiceController::class, 'store']);
         Route::put('/update/{id}', [InvoiceController::class, 'update']);
         Route::delete('/destroy/{id}', [InvoiceController::class, 'destroy']);
+    });
+
+    // Reports Controller
+    Route::group(['prefix' => 'reports'], function () {
+        Route::get('/products', [ReportController::class, 'products']);
+        Route::get('/invoices', [ReportController::class, 'invoices']);
+        Route::get('/InvoicesUnPaid', [ReportController::class, 'InvoicesUnPaid']);
     });
 });

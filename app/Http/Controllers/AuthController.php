@@ -36,7 +36,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $this->createNewToken($token);
-    }
+    } 
     /**
      * Register a User.
      *
