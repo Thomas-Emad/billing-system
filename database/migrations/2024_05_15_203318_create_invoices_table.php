@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->decimal('total_price')->default(0);
             $table->decimal('paid_price')->default(0);
+            $table->decimal('Profits')->default(0)->comment('Add normal_sale - buy_price');
             $table->enum('status', ['paid', 'unpaid', 'partly_paid'])->default('paid');
             $table->foreignId('customer_id')->constrained('customers', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();

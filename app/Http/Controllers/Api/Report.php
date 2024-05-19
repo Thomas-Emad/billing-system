@@ -65,4 +65,14 @@ class Report extends Controller
         }
 
     }
+
+    public function profits() {
+
+        $invoices = Invoice::all();
+        $profits = $invoices->sum('profits');
+        return response()->json([
+            'profits' => $profits
+        ], 200);
+    }
+
 }

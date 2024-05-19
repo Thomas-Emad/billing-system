@@ -61,7 +61,7 @@ class InvoiceController extends Controller
 
     }
 
-    public function AddProductInInvoice($invoice_id) {
+    public function AddProductInInvoice(Request $request, $invoice_id) {
 
         $validate = Validator::make($request->all(), [
             'product_id' => ['required', 'int', 'exists:products,id'],
@@ -81,12 +81,13 @@ class InvoiceController extends Controller
             InvoiceProduct::create([
                 'invoice_id' => $invoice->id,
                 'product_id' => $request->product_id,
-                'quantity' => $request->quantity,
-                'price' => $product->price
+                'quantity'   => $request->quantity,
+                'price'      => $product->normal_sale
             ]);
 
             Invoice::findOrFail($invoice->id)->update([
-                'total_price' => $invoice->total_price + $product->price,
+                'total_price' => $invoice->total_price + $product->normal_sale,
+                'profits'     => $product->normal_sale - $product->buy_price
             ]);
 
         }

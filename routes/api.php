@@ -59,6 +59,8 @@ Route::group(['middleware' => 'JWTAuth'], function () {
     Route::group(['prefix' => 'reports'], function () {
         Route::get('/products', [ReportController::class, 'products']);
         Route::get('/invoices', [ReportController::class, 'invoices']);
+        Route::get('/profits', [ReportController::class, 'profits']);
         Route::get('/InvoicesUnPaid', [ReportController::class, 'InvoicesUnPaid']);
     });
 });
+
