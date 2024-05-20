@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -47,9 +47,8 @@ class InvoiceController extends Controller
 
         } else {
 
-            Invoice::craete([
-                'status' => $request->status,
-
+            Invoice::create([
+                'status'      => $request->status,
                 'customer_id' => $request->customer_id
             ]);
 
@@ -61,7 +60,7 @@ class InvoiceController extends Controller
 
     }
 
-    public function AddProductInInvoice(Request $request, $invoice_id) {
+    public function AddProductInInvoice(Request $request) {
 
         $validate = Validator::make($request->all(), [
             'product_id' => ['required', 'int', 'exists:products,id'],
@@ -77,7 +76,7 @@ class InvoiceController extends Controller
         } else {
 
             $product = Product::findOrFail($request->product_id);
-            $invoice = Invoice::findOrFail($invoice_id);
+            $invoice = Invoice::findOrFail($request->invoice_id);
             InvoiceProduct::create([
                 'invoice_id' => $invoice->id,
                 'product_id' => $request->product_id,
@@ -89,6 +88,10 @@ class InvoiceController extends Controller
                 'total_price' => $invoice->total_price + $product->normal_sale,
                 'profits'     => $product->normal_sale - $product->buy_price
             ]);
+
+            return response()->json([
+                'Message' => 'Created Suc'
+            ], 200);
 
         }
 
@@ -109,7 +112,9 @@ class InvoiceController extends Controller
 
         } else {
 
-            $invoice = Invoice::findOrFail($id)->update([
+            $invoice = Invoice::findOrFail($id);
+            
+            $invoice->update([
                 'status'     => $request->status,
                 'paid_price' => $request->paid_price
             ]);
@@ -119,7 +124,7 @@ class InvoiceController extends Controller
                 Indebtedness::create([
                     'debtor'      => $invoice->total_price - $request->paid_price,
                     'customer_id' => $invoice->customer->id,
-                    'invoice_id'  => $invocie->id
+                    'invoice_id'  => $invoice->id
                 ]);
                 
             }
@@ -129,15 +134,6 @@ class InvoiceController extends Controller
             ], 200);
 
         }
-
-    }
-
-    public function destroy($id) {
-
-        Invoice::findOrFail($id)->delete();
-        return response()->json([
-            'Message' => 'Deleted Suc'
-        ], 200);
 
     }
 

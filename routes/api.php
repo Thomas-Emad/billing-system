@@ -50,9 +50,9 @@ Route::group(['middleware' => 'JWTAuth'], function () {
     // Invoice Controller
     Route::group(['prefix' => 'invoices'], function () {
         Route::get('/index', [InvoiceController::class, 'index']);
-        Route::post('/store', [InvoiceController::class, 'store']);
+        Route::post('/CretaInvoice', [InvoiceController::class, 'CretaInvoice']);
+        Route::post('/AddProductInInvoice', [InvoiceController::class, 'AddProductInInvoice']);
         Route::put('/update/{id}', [InvoiceController::class, 'update']);
-        Route::delete('/destroy/{id}', [InvoiceController::class, 'destroy']);
     });
 
     // Reports Controller
@@ -62,5 +62,6 @@ Route::group(['middleware' => 'JWTAuth'], function () {
         Route::get('/profits', [ReportController::class, 'profits']);
         Route::get('/InvoicesUnPaid', [ReportController::class, 'InvoicesUnPaid']);
     });
+    
 });
 

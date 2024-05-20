@@ -16,7 +16,7 @@ class Invoice extends Model
         'profits',
         'paid_price',
         'total_price',
-        'customer_id',
+        'customer_id'
     ];
 
     public function products() {
