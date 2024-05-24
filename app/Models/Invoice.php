@@ -19,11 +19,13 @@ class Invoice extends Model
         'customer_id'
     ];
 
-    public function products() {
+    public function products()
+    {
         return $this->belongsToMany(InvoiceProduct::class);
     }
 
-    public function customer() {
+    public function customer()
+    {
         return $this->belongsTo(Customer::class);
     }
 }

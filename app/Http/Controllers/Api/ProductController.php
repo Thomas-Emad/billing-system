@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiForamtProduct;
+use App\Http\Resources\InvoiceProduct as InvoiceProductResource;
 use App\Models\Product;
+use App\Models\InvoiceProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -59,7 +61,19 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $product = Product::find($id);
+        if ($product == null) {
+            return response()->json([
+                'message' => 'Product Not Found'
+            ], 404);
+        }
+
+        $invoiceProduct = InvoiceProduct::where('product_id', $id)->get();
+        $product['count_sale'] = $invoiceProduct->count();
+        $product['profits'] =  $invoiceProduct->sum('price') - ($product->buy_price * $product['count_sale']);
+        $product['invoices'] = InvoiceProductResource::collection($invoiceProduct);
+
+        return response()->json($product, 200);
     }
 
     /**

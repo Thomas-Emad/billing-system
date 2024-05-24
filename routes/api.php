@@ -53,6 +53,7 @@ Route::group(['middleware' => 'JWTAuth'], function () {
         Route::post('/CretaInvoice', [InvoiceController::class, 'CretaInvoice']);
         Route::post('/AddProductInInvoice', [InvoiceController::class, 'AddProductInInvoice']);
         Route::put('/update/{id}', [InvoiceController::class, 'update']);
+        Route::get('/search', [InvoiceController::class, 'search']);
     });
 
     // Reports Controller
@@ -62,6 +63,4 @@ Route::group(['middleware' => 'JWTAuth'], function () {
         Route::get('/profits', [ReportController::class, 'profits']);
         Route::get('/InvoicesUnPaid', [ReportController::class, 'InvoicesUnPaid']);
     });
-    
 });
-
