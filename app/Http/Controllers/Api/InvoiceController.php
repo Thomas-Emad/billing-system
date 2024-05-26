@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class InvoiceController extends Controller
 {
+
     public function index()
     {
 
@@ -73,7 +74,7 @@ class InvoiceController extends Controller
             ], 400);
         } else {
 
-            // $product = Product::findOrFail($request->product_id);
+            $product = Product::findOrFail($request->product_id);
             $invoice = Invoice::findOrFail($request->invoice_id);
             InvoiceProduct::create([
                 'invoice_id' => $invoice->id,
@@ -84,7 +85,7 @@ class InvoiceController extends Controller
 
             Invoice::findOrFail($invoice->id)->update([
                 'total_price' => $invoice->total_price + $request->price,
-                // 'profits'     => $product->normal_sale - $product->buy_price
+                'profits'     => $product->normal_sale - $product->buy_price
             ]);
 
             return response()->json([
@@ -142,10 +143,13 @@ class InvoiceController extends Controller
         ]);
 
         if ($validate->fails()) {
+
             return response()->json([
                 'errors' => $validate->errors()
             ], 400);
+
         } else {
+
             // Order By Total Price or Created At [desc,asc]
             $order  = 'created_at';
             $orderby = 'desc';
@@ -182,6 +186,33 @@ class InvoiceController extends Controller
             return response()->json([
                 'invoices' => $invoices
             ], 200);
+
         }
+
     }
+
+    public function destroy($invoice_id, $product_id) 
+    {
+
+        $invoice = Invoice::where('id', $invoice_id)->where('status', 'unpaid')->first();
+        if($invoice) {
+
+            $invoice_product = InvoiceProduct::where('invoice_id', $invoice_id)
+                                ->where('product_id', $product_id)
+                                ->first();
+            if($invoice_product) {
+                $invoice_product->destroy($invoice_product->id);
+            }
+            return response()->json([
+                'Messsage' => 'Deleted Suc'
+            ], 200);
+
+        }
+
+        return response()->json([
+            'Messsage' => 'الفاتورة لم تكن غير مدفوعة او هذا المنتج ليس داخل هذه الفاتورة'
+        ], 200);
+
+    }
+
 }

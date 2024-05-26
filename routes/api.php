@@ -54,6 +54,7 @@ Route::group(['middleware' => 'JWTAuth'], function () {
         Route::post('/AddProductInInvoice', [InvoiceController::class, 'AddProductInInvoice']);
         Route::put('/update/{id}', [InvoiceController::class, 'update']);
         Route::get('/search', [InvoiceController::class, 'search']);
+        Route::delete('/destroy/{invoice_id}/{product_id}', [InvoiceController::class, 'destroy']);
     });
 
     // Reports Controller
